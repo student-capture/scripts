@@ -3,6 +3,10 @@
 # MIT License, no warranty, if this blows stuff up: blame yourself
 # He he he
 
+#
+# WARNING: TODO, ADD MORE HOSTS
+#
+
 if [[ ! `whoami` == "root" ]]; then
     echo "Lol, you are not root!"
     echo "You have to be root"
