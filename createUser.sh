@@ -35,7 +35,7 @@ if [[ "$FULLNAME" =~ [^\ a-zA-Z] ]]; then
 fi
 
 PASSWORD=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-12};echo`
-HOSTS="osthyvel diskborste"
+HOSTS="osthyvel diskborste grytvante stekspade yxa elvisp paltslev pastaslev"
 HOSTS=$(echo $HOSTS | sed "s/\<`hostname`\>//g")
 echo $HOSTS
 
@@ -70,8 +70,12 @@ echo -e "Done, cloning user to other hosts\n"
 for HOSTNAME in ${HOSTS} ; do
     echo "Adding $USERNAME on $HOSTNAME"
     ssh "$HOSTNAME" getent passwd "$USERNAME" >/dev/null 2>&1
-    if [[ $? -eq 0 ]]; then
+    ret=$?
+    if [[ "$ret" -eq 0 ]]; then
 	echo "User already exists! Skipping..."
+	continue
+    elif [[ "$ret" -eq 255 ]]; then
+	echo "$HOSTNAME not reachable, skipping..."
 	continue
     fi
     ssh ${HOSTNAME} useradd -m "$USERNAME" >/dev/null

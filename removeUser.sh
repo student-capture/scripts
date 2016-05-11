@@ -17,17 +17,22 @@ read USERNAME
 USERNAME=$(echo "$USERNAME" | tr '[:upper:]' '[:lower:]')
 
 
-HOSTS="osthyvel diskborste"
+HOSTS="osthyvel diskborste grytvante stekspade yxa elvisp paltslev pastaslev"
 
 
 
 for HOSTNAME in ${HOSTS} ; do
     echo "HHH'ing $USERNAME on $HOSTNAME"
     ssh "$HOSTNAME" getent passwd "$USERNAME" >/dev/null 2>&1
-    if [[ $? -ne 0 ]]; then
+    ret=$?
+    if [[ "$ret" -ne 0 ]]; then
 	echo "$USERNAME doesnt exist on $HOSTNAME, skipping..."
 	continue
+    elif [[ "$ret" -eq 255 ]]; then
+	echo "$HOSTNAME not reachable, skipping..."
+	continue
     fi
+
     ssh ${HOSTNAME} userdel -r \""$USERNAME"\" >/dev/null 2>&1
     echo "$USERNAME has been physically removed on $HOSTNAME, so to speak."
 done
